@@ -136,7 +136,40 @@
       border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fafbfc;
     }
     .panel h3 { margin: 0 0 8px; color: var(--text); font-size: 0.95rem; }
-  </style>
+  
+    .guide {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+      margin: 0 0 16px;
+    }
+    .guide h2 {
+      font-size: 1.05rem;
+      margin: 0 0 8px;
+    }
+    .guide p {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    footer .site-nav {
+      margin: 8px 0 4px;
+    }
+    footer .site-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin: 0 2px;
+    }
+    footer .site-nav a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+</style>
+  <!-- AdSense auto ads: uncomment after publisher ID
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
 </head>
 <body>
   <div class="wrap">
@@ -150,6 +183,11 @@
         <span>完成率：<strong id="stat-rate">—</strong></span>
       </div>
     </header>
+    <section class="guide" id="site-guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">使用说明</h2>
+      <p>本页面向 2026 年常见工薪场景：按累计预扣预缴思路估算当月应预扣个税，可填写五险一金、专项附加扣除，并对照年终奖「单独计税」与「并入综合所得」。使用方式：在表单中填入税前工资、已累计收入与已预扣税额、专项附加等字段，点击计算即可看到税额与到手粗算；年终奖区可切换两种计税口径对比。数据只在浏览器本地运算。政策与税率表可能调整，各地专项附加、汇算清缴规则以税务局及个税 APP 为准；本工具仅为公开信息转述与估算，不构成税务建议，申报请以官方系统为准。</p>
+    </section>
+
 
     <section class="card" aria-labelledby="form-title">
       <h2 id="form-title">工资薪金 · 累计预扣预缴</h2>
@@ -334,7 +372,16 @@
     </section>
 
     <footer>
-      仅供参考，以税务局为准。数据仅在浏览器本地计算，不上传服务器。<br />
+      <nav class="site-nav" aria-label="站点导航">
+        <a href="/">首页</a>
+        <span aria-hidden="true">·</span>
+        <a href="about.html">关于</a>
+        <span aria-hidden="true">·</span>
+        <a href="privacy.html">隐私政策</a>
+        <span aria-hidden="true">·</span>
+        <a href="contact.html">联系我们</a>
+      </nav>
+仅供参考，以税务局为准。数据仅在浏览器本地计算，不上传服务器。<br />
       <!-- analytics: localStorage counters below; swap later for Umami/Plausible -->
     </footer>
   </div>
