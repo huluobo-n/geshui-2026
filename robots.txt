@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://geshui.hpn6.com/sitemap.xml

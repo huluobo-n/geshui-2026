@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2026个人所得税计算器 - 累计预扣预缴 / 年终奖</title>
+  <meta name="description" content="免费2026个税计算器：工资薪金累计预扣预缴、五险一金、专项附加扣除、年终奖单独计税粗算。仅供参考，以税务局为准。" />
+  <meta name="keywords" content="个人所得税计算器,2026个税,累计预扣预缴,五险一金,年终奖,专项附加扣除" />
+  <meta name="robots" content="index,follow" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1a2332;
+      --muted: #5a6a7a;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #0d9488;
+      --warn: #b45309;
+      --good: #047857;
+      --bad: #b91c1c;
+      --shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 220px);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 20px 16px 48px; }
+    header.hero { margin-bottom: 18px; }
+    header.hero h1 {
+      font-size: clamp(1.35rem, 4vw, 1.85rem);
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    header.hero p.lead { margin: 0; color: var(--muted); font-size: 0.98rem; }
+    .disclaimer {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      color: var(--warn);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .stats-bar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin: 14px 0 18px; font-size: 0.85rem; color: var(--muted);
+    }
+    .stats-bar span {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 999px; padding: 4px 12px;
+    }
+    .stats-bar strong { color: var(--text); }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 18px 18px 16px; margin-bottom: 16px;
+    }
+    .card h2 { margin: 0 0 12px; font-size: 1.05rem; }
+    .card h3 { margin: 16px 0 8px; font-size: 0.95rem; color: var(--muted); font-weight: 600; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px 14px;
+    }
+    .field label {
+      display: block; font-size: 0.86rem; color: var(--muted); margin-bottom: 4px;
+    }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 10px; font-size: 1rem; background: #fff; color: var(--text);
+    }
+    .field input:focus, .field select:focus {
+      outline: 2px solid rgba(37, 99, 235, 0.25); border-color: var(--primary);
+    }
+    .field .hint { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .check-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin: 10px 0 4px; font-size: 0.92rem;
+    }
+    .check-row input { margin-top: 3px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    button {
+      appearance: none; border: none; border-radius: 10px;
+      padding: 11px 16px; font-size: 0.95rem; cursor: pointer; font-weight: 600;
+    }
+    button.primary { background: var(--primary); color: #fff; }
+    button.primary:hover { background: var(--primary-hover); }
+    button.ghost { background: #f1f5f9; color: var(--text); }
+    button.ghost:hover { background: #e2e8f0; }
+    .error { color: var(--bad); font-size: 0.9rem; margin-top: 10px; min-height: 1.2em; }
+    .result-hidden { display: none; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+    .metric {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px;
+    }
+    .metric .k { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+    .metric .v { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+    .metric .v.good { color: var(--good); }
+    .metric .v.warn { color: var(--warn); }
+    .highlight {
+      margin-top: 12px; padding: 14px; border-radius: 12px;
+      background: linear-gradient(135deg, #ecfdf5, #f0f9ff);
+      border: 1px solid #bbf7d0;
+    }
+    .highlight .sub { font-size: 0.85rem; color: var(--muted); }
+    .highlight .big { font-size: 1.6rem; font-weight: 800; color: var(--good); margin: 4px 0; }
+    table.rate {
+      width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px;
+    }
+    table.rate th, table.rate td {
+      border: 1px solid var(--border); padding: 6px 8px; text-align: left;
+    }
+    table.rate th { background: #f8fafc; }
+    .note { font-size: 0.88rem; color: var(--muted); margin: 12px 0 0; }
+    details.faq { border-top: 1px solid var(--border); padding: 10px 0; }
+    details.faq:first-of-type { border-top: none; }
+    details.faq summary { cursor: pointer; font-weight: 600; }
+    details.faq p { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
+    footer {
+      margin-top: 8px; text-align: center; color: var(--muted); font-size: 0.82rem;
+    }
+    .compare {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-top: 12px;
+    }
+    .panel {
+      border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fafbfc;
+    }
+    .panel h3 { margin: 0 0 8px; color: var(--text); font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>2026 个人所得税计算器</h1>
+      <p class="lead">工资薪金累计预扣预缴 · 五险一金 · 专项附加扣除 · 年终奖粗算（单独计税 / 并入综合所得对照）</p>
+      <p class="disclaimer">仅供参考，以税务局与扣缴义务人实际申报为准。本页为估算工具，不构成税务建议。</p>
+      <div class="stats-bar" aria-label="本地使用统计">
+        <span>开始计算：<strong id="stat-start">0</strong></span>
+        <span>算出结果：<strong id="stat-done">0</strong></span>
+        <span>完成率：<strong id="stat-rate">—</strong></span>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">工资薪金 · 累计预扣预缴</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="month">纳税月份（1–12）</label>
+          <input id="month" type="number" min="1" max="12" step="1" value="3" inputmode="numeric" />
+          <div class="hint">当年截至本月在本单位任职月数</div>
+        </div>
+        <div class="field">
+          <label for="salary">本月税前工资（元）</label>
+          <input id="salary" type="number" min="0" step="0.01" value="15000" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="priorIncome">此前累计税前工资（元，不含本月）</label>
+          <input id="priorIncome" type="number" min="0" step="0.01" value="30000" inputmode="decimal" />
+          <div class="hint">勾选下方「月薪相同」可自动填</div>
+        </div>
+        <div class="field">
+          <label for="priorTaxPaid">累计已预扣个税（元，不含本月）</label>
+          <input id="priorTaxPaid" type="number" min="0" step="0.01" value="0" inputmode="decimal" />
+          <div class="hint">月薪相同且专项稳定时可点「估算已缴」</div>
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="sameSalary" checked />
+        <span>此前各月税前工资、五险一金与专项附加与本月相同（自动推算累计收入与已缴）</span>
+      </label>
+
+      <h3>五险一金（个人缴纳，月）</h3>
+      <div class="grid">
+        <div class="field">
+          <label for="siBase">社保缴费基数（元）</label>
+          <input id="siBase" type="number" min="0" step="0.01" value="15000" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="hfBase">公积金缴费基数（元）</label>
+          <input id="hfBase" type="number" min="0" step="0.01" value="15000" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="pensionRate">养老保险比例（%）</label>
+          <input id="pensionRate" type="number" min="0" max="20" step="0.01" value="8" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="medicalRate">医疗保险比例（%）</label>
+          <input id="medicalRate" type="number" min="0" max="10" step="0.01" value="2" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="unempRate">失业保险比例（%）</label>
+          <input id="unempRate" type="number" min="0" max="5" step="0.01" value="0.5" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="hfRate">住房公积金比例（%）</label>
+          <input id="hfRate" type="number" min="0" max="12" step="0.01" value="12" inputmode="decimal" />
+          <div class="hint">各地基数上下限与比例不同，默认仅为示例</div>
+        </div>
+        <div class="field">
+          <label for="siExtra">其他专项扣除（元/月，可选）</label>
+          <input id="siExtra" type="number" min="0" step="0.01" value="0" inputmode="decimal" />
+          <div class="hint">如符合条件的商业健康险等，按月摊入</div>
+        </div>
+      </div>
+
+      <h3>专项附加扣除与其他</h3>
+      <div class="grid">
+        <div class="field">
+          <label for="specialAdd">专项附加扣除合计（元/月）</label>
+          <input id="specialAdd" type="number" min="0" step="0.01" value="3000" inputmode="decimal" />
+          <div class="hint">子女教育、住房贷款利息/租金、赡养老人等合计</div>
+        </div>
+        <div class="field">
+          <label for="otherDeduct">依法确定的其他扣除（元/月）</label>
+          <input id="otherDeduct" type="number" min="0" step="0.01" value="0" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="taxFree">本月免税收入（元）</label>
+          <input id="taxFree" type="number" min="0" step="0.01" value="0" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" id="btn-calc">开始计算 · 本月应预扣</button>
+        <button type="button" class="ghost" id="btn-estimate">估算已缴（月薪相同）</button>
+        <button type="button" class="ghost" id="btn-reset">恢复示例</button>
+      </div>
+      <div class="error" id="error" role="alert"></div>
+    </section>
+
+    <section class="card result-hidden" id="result" aria-live="polite">
+      <h2>本月预扣结果</h2>
+      <div class="highlight">
+        <div class="sub">本期应预扣预缴税额</div>
+        <div class="big" id="out-month-tax">¥0</div>
+        <div class="sub" id="out-month-note"></div>
+      </div>
+      <div class="metrics" style="margin-top:12px">
+        <div class="metric"><span class="k">累计收入</span><span class="v" id="out-cum-income">—</span></div>
+        <div class="metric"><span class="k">累计减除费用（5000×月）</span><span class="v" id="out-cum-exempt">—</span></div>
+        <div class="metric"><span class="k">累计专项扣除（五险一金等）</span><span class="v" id="out-cum-si">—</span></div>
+        <div class="metric"><span class="k">累计专项附加扣除</span><span class="v" id="out-cum-add">—</span></div>
+        <div class="metric"><span class="k">累计应纳税所得额</span><span class="v" id="out-taxable">—</span></div>
+        <div class="metric"><span class="k">适用预扣率 / 速算扣除数</span><span class="v" id="out-bracket">—</span></div>
+        <div class="metric"><span class="k">累计应预扣税额</span><span class="v" id="out-cum-tax">—</span></div>
+        <div class="metric"><span class="k">累计已预扣（不含本月）</span><span class="v" id="out-prior-tax">—</span></div>
+        <div class="metric"><span class="k">本月个人五险一金</span><span class="v" id="out-si-month">—</span></div>
+        <div class="metric"><span class="k">本月税后（工资−五险一金−税）</span><span class="v" id="out-net" class="good">—</span></div>
+      </div>
+      <p class="note" id="explain"></p>
+    </section>
+
+    <section class="card" aria-labelledby="bonus-title">
+      <h2 id="bonus-title">年终奖粗算（可选）</h2>
+      <p class="note" style="margin-top:0">政策依据公开信息：全年一次性奖金在约定期限内可选择「单独计税」或「并入综合所得」（每人每年单独计税原则上仅一次）。以下为粗算对照。</p>
+      <div class="grid">
+        <div class="field">
+          <label for="bonus">全年一次性奖金（元）</label>
+          <input id="bonus" type="number" min="0" step="0.01" value="36000" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="annualOtherTaxable">并入时：全年其他综合所得应纳税所得额（元）</label>
+          <input id="annualOtherTaxable" type="number" min="0" step="0.01" value="0" inputmode="decimal" />
+          <div class="hint">不含年终奖；可用上方工资结果粗估，或自行填写汇算口径余额</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" id="btn-bonus">计算年终奖对照</button>
+      </div>
+      <div class="error" id="bonus-error" role="alert"></div>
+      <div class="result-hidden" id="bonus-result">
+        <div class="compare">
+          <div class="panel">
+            <h3>单独计税</h3>
+            <div class="metric"><span class="k">奖金÷12</span><span class="v" id="b-avg">—</span></div>
+            <div class="metric"><span class="k">适用税率 / 速算</span><span class="v" id="b-sep-bracket">—</span></div>
+            <div class="metric"><span class="k">应纳税额</span><span class="v warn" id="b-sep-tax">—</span></div>
+          </div>
+          <div class="panel">
+            <h3>并入综合所得（粗算增量税）</h3>
+            <div class="metric"><span class="k">并入后全年应纳税所得额</span><span class="v" id="b-merge-base">—</span></div>
+            <div class="metric"><span class="k">增量税额（有奖−无奖）</span><span class="v warn" id="b-merge-tax">—</span></div>
+            <div class="metric"><span class="k">对照建议</span><span class="v" id="b-advice">—</span></div>
+          </div>
+        </div>
+        <p class="note">并入口径依赖你填写的「全年其他综合所得应纳税所得额」，与真实汇算可能有偏差；请用个税 APP 试算为准。</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="rate-title">
+      <h2 id="rate-title">税率表出处（公开信息）</h2>
+      <p class="note" style="margin-top:0">居民个人工资、薪金所得预扣预缴适用七级超额累进预扣率表；综合所得适用同档税率表。数值来自《中华人民共和国个人所得税法》及税务总局公开税率（预扣率）表，页面仅转述公开信息。</p>
+      <table class="rate" aria-label="工资薪金预扣率表">
+        <thead>
+          <tr><th>级数</th><th>累计预扣预缴应纳税所得额</th><th>预扣率</th><th>速算扣除数</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>不超过 36,000 元</td><td>3%</td><td>0</td></tr>
+          <tr><td>2</td><td>超过 36,000 元至 144,000 元</td><td>10%</td><td>2,520</td></tr>
+          <tr><td>3</td><td>超过 144,000 元至 300,000 元</td><td>20%</td><td>16,920</td></tr>
+          <tr><td>4</td><td>超过 300,000 元至 420,000 元</td><td>25%</td><td>31,920</td></tr>
+          <tr><td>5</td><td>超过 420,000 元至 660,000 元</td><td>30%</td><td>52,920</td></tr>
+          <tr><td>6</td><td>超过 660,000 元至 960,000 元</td><td>35%</td><td>85,920</td></tr>
+          <tr><td>7</td><td>超过 960,000 元</td><td>45%</td><td>181,920</td></tr>
+        </tbody>
+      </table>
+      <p class="note">年终奖单独计税使用「按月换算后的综合所得税率表」（÷12 后查月度档）：3%/0，10%/210，20%/1,410，25%/2,660，30%/4,410，35%/7,160，45%/15,160。</p>
+    </section>
+
+    <section class="card" aria-labelledby="faq-title">
+      <h2 id="faq-title">常见问题</h2>
+      <details class="faq">
+        <summary>累计预扣预缴怎么算？</summary>
+        <p>累计预扣预缴应纳税所得额 = 累计收入 − 累计免税收入 − 累计减除费用（5000×任职月数）− 累计专项扣除 − 累计专项附加扣除 − 累计其他扣除。本期应预扣税额 =（累计应纳税所得额 × 预扣率 − 速算扣除数）− 累计已预扣税额。</p>
+      </details>
+      <details class="faq">
+        <summary>五险一金比例为什么和工资条不一致？</summary>
+        <p>各地基数上下限、医保大额、公积金比例不同。请按工资条个人缴纳实数或当地公布比例改默认值。</p>
+      </details>
+      <details class="faq">
+        <summary>年终奖选单独还是并入？</summary>
+        <p>公开政策允许在约定期限内二选一；哪个更省因收入结构而异。本页只做粗算对照，请以个税 APP 试算与汇算清缴为准。</p>
+      </details>
+    </section>
+
+    <footer>
+      仅供参考，以税务局为准。数据仅在浏览器本地计算，不上传服务器。<br />
+      <!-- analytics: localStorage counters below; swap later for Umami/Plausible -->
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var STORAGE_KEY = "geshui_2026_stats_v1";
+    var BASIC_DEDUCT = 5000;
+
+    // 综合所得 / 工资薪金预扣率表（年档）
+    var ANNUAL_BRACKETS = [
+      { upTo: 36000, rate: 0.03, quick: 0 },
+      { upTo: 144000, rate: 0.10, quick: 2520 },
+      { upTo: 300000, rate: 0.20, quick: 16920 },
+      { upTo: 420000, rate: 0.25, quick: 31920 },
+      { upTo: 660000, rate: 0.30, quick: 52920 },
+      { upTo: 960000, rate: 0.35, quick: 85920 },
+      { upTo: Infinity, rate: 0.45, quick: 181920 }
+    ];
+
+    // 年终奖单独计税：按月换算后的综合所得税率表
+    var MONTHLY_BRACKETS = [
+      { upTo: 3000, rate: 0.03, quick: 0 },
+      { upTo: 12000, rate: 0.10, quick: 210 },
+      { upTo: 25000, rate: 0.20, quick: 1410 },
+      { upTo: 35000, rate: 0.25, quick: 2660 },
+      { upTo: 55000, rate: 0.30, quick: 4410 },
+      { upTo: 80000, rate: 0.35, quick: 7160 },
+      { upTo: Infinity, rate: 0.45, quick: 15160 }
+    ];
+
+    function loadStats() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { start: 0, done: 0 };
+        var o = JSON.parse(raw);
+        return { start: Number(o.start) || 0, done: Number(o.done) || 0 };
+      } catch (e) {
+        return { start: 0, done: 0 };
+      }
+    }
+    function saveStats(s) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) {}
+    }
+    function renderStats() {
+      var s = loadStats();
+      document.getElementById("stat-start").textContent = String(s.start);
+      document.getElementById("stat-done").textContent = String(s.done);
+      var rate = s.start > 0 ? ((s.done / s.start) * 100).toFixed(1) + "%" : "—";
+      document.getElementById("stat-rate").textContent = rate;
+    }
+    function bump(kind) {
+      var s = loadStats();
+      if (kind === "start") s.start += 1;
+      if (kind === "done") s.done += 1;
+      saveStats(s);
+      renderStats();
+      // // Umami: umami.track(kind === "start" ? "calc_start" : "calc_done");
+      // // Plausible: plausible(kind === "start" ? "Calc Start" : "Calc Done");
+    }
+    renderStats();
+
+    function money(n) {
+      if (!isFinite(n)) return "—";
+      var rounded = Math.round(n * 100) / 100;
+      return "¥" + rounded.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function pct(r) { return (r * 100).toFixed(0) + "%"; }
+
+    function findBracket(taxable, table) {
+      for (var i = 0; i < table.length; i++) {
+        if (taxable <= table[i].upTo) return table[i];
+      }
+      return table[table.length - 1];
+    }
+
+    function taxOn(taxable, table) {
+      if (taxable <= 0) return { tax: 0, bracket: table[0] };
+      var b = findBracket(taxable, table);
+      return { tax: taxable * b.rate - b.quick, bracket: b };
+    }
+
+    function num(id) {
+      var v = parseFloat(document.getElementById(id).value);
+      return isFinite(v) ? v : NaN;
+    }
+
+    function monthlySI() {
+      var siBase = num("siBase");
+      var hfBase = num("hfBase");
+      var pension = siBase * (num("pensionRate") / 100);
+      var medical = siBase * (num("medicalRate") / 100);
+      var unemp = siBase * (num("unempRate") / 100);
+      var hf = hfBase * (num("hfRate") / 100);
+      var extra = num("siExtra") || 0;
+      return pension + medical + unemp + hf + extra;
+    }
+
+    function setError(msg) {
+      document.getElementById("error").textContent = msg || "";
+    }
+
+    function syncSameSalaryFields() {
+      var same = document.getElementById("sameSalary").checked;
+      var month = parseInt(document.getElementById("month").value, 10);
+      var salary = num("salary");
+      if (!same || !(month >= 1) || !isFinite(salary)) return;
+      document.getElementById("priorIncome").value = String(Math.round(salary * (month - 1) * 100) / 100);
+    }
+
+    function estimatePriorTax() {
+      var month = parseInt(document.getElementById("month").value, 10);
+      var salary = num("salary");
+      var taxFree = num("taxFree") || 0;
+      var specialAdd = num("specialAdd") || 0;
+      var otherDeduct = num("otherDeduct") || 0;
+      var si = monthlySI();
+      if (!(month >= 1 && month <= 12) || !isFinite(salary) || !isFinite(si)) {
+        setError("请先填写有效的月份、工资与五险一金参数。");
+        return;
+      }
+      var paid = 0;
+      for (var m = 1; m < month; m++) {
+        var cumIncome = salary * m;
+        var cumExempt = BASIC_DEDUCT * m;
+        var cumSi = si * m;
+        var cumAdd = specialAdd * m;
+        var cumOther = otherDeduct * m;
+        var cumFree = taxFree * m; // 简化：假定各月免税收入相同
+        var taxable = cumIncome - cumFree - cumExempt - cumSi - cumAdd - cumOther;
+        var cumTax = Math.max(0, taxOn(taxable, ANNUAL_BRACKETS).tax);
+        var monthTax = Math.max(0, cumTax - paid);
+        paid += monthTax;
+      }
+      document.getElementById("priorTaxPaid").value = String(Math.round(paid * 100) / 100);
+      document.getElementById("priorIncome").value = String(Math.round(salary * (month - 1) * 100) / 100);
+      setError("");
+    }
+
+    function calcMonth() {
+      bump("start");
+      setError("");
+      var month = parseInt(document.getElementById("month").value, 10);
+      var salary = num("salary");
+      var priorIncome = num("priorIncome");
+      var priorTaxPaid = num("priorTaxPaid");
+      var taxFree = num("taxFree") || 0;
+      var specialAdd = num("specialAdd") || 0;
+      var otherDeduct = num("otherDeduct") || 0;
+      var si = monthlySI();
+
+      if (!(month >= 1 && month <= 12)) {
+        setError("纳税月份须为 1–12。");
+        return;
+      }
+      if (![salary, priorIncome, priorTaxPaid, si, specialAdd, otherDeduct, taxFree].every(isFinite)) {
+        setError("请检查输入：须为有效数字。");
+        return;
+      }
+      if (salary < 0 || priorIncome < 0 || priorTaxPaid < 0 || si < 0) {
+        setError("金额不能为负数。");
+        return;
+      }
+
+      if (document.getElementById("sameSalary").checked) {
+        syncSameSalaryFields();
+        estimatePriorTax();
+        priorIncome = num("priorIncome");
+        priorTaxPaid = num("priorTaxPaid");
+      }
+
+      var cumIncome = priorIncome + salary;
+      var cumExempt = BASIC_DEDUCT * month;
+      var cumSi = si * month; // 简化：假定各月专项扣除相同
+      var cumAdd = specialAdd * month;
+      var cumOther = otherDeduct * month;
+      var cumFree = taxFree * month; // 简化
+      var taxable = cumIncome - cumFree - cumExempt - cumSi - cumAdd - cumOther;
+      var cumTaxResult = taxOn(taxable, ANNUAL_BRACKETS);
+      var cumTax = Math.max(0, cumTaxResult.tax);
+      var monthTax = Math.max(0, Math.round((cumTax - priorTaxPaid) * 100) / 100);
+      // 若累计税小于已缴，本期为 0（不处理退税；退税多在汇算）
+      if (cumTax < priorTaxPaid) monthTax = 0;
+
+      var net = salary - si - monthTax;
+
+      document.getElementById("out-month-tax").textContent = money(monthTax);
+      document.getElementById("out-month-note").textContent =
+        monthTax === 0 && taxable <= 0
+          ? "累计应纳税所得额≤0，本期无需预扣。"
+          : ("任职第 " + month + " 个月 · 本地估算");
+      document.getElementById("out-cum-income").textContent = money(cumIncome);
+      document.getElementById("out-cum-exempt").textContent = money(cumExempt);
+      document.getElementById("out-cum-si").textContent = money(cumSi);
+      document.getElementById("out-cum-add").textContent = money(cumAdd);
+      document.getElementById("out-taxable").textContent = money(Math.max(0, taxable));
+      document.getElementById("out-bracket").textContent =
+        taxable <= 0 ? "—" : (pct(cumTaxResult.bracket.rate) + " / " + money(cumTaxResult.bracket.quick));
+      document.getElementById("out-cum-tax").textContent = money(cumTax);
+      document.getElementById("out-prior-tax").textContent = money(priorTaxPaid);
+      document.getElementById("out-si-month").textContent = money(si);
+      document.getElementById("out-net").textContent = money(net);
+      document.getElementById("explain").textContent =
+        "公式（简化）：累计应纳税所得额 = 累计收入 − 累计免税 − 累计减除费用 − 累计专项 − 累计专项附加 − 其他；本期税额 = max(0, 累计税额 − 已预扣)。五险一金按「基数×个人比例」估算，未做各地基数封顶/保底。";
+
+      document.getElementById("result").classList.remove("result-hidden");
+      bump("done");
+    }
+
+    function calcBonus() {
+      // 年终奖单独计税也计入一次「开始/完成」，便于完成率；与工资共用同一计数器
+      bump("start");
+      var err = document.getElementById("bonus-error");
+      err.textContent = "";
+      var bonus = num("bonus");
+      var otherTaxable = num("annualOtherTaxable");
+      if (!isFinite(bonus) || bonus < 0) {
+        err.textContent = "请填写有效的年终奖金额。";
+        return;
+      }
+      if (!isFinite(otherTaxable) || otherTaxable < 0) {
+        err.textContent = "请填写有效的「全年其他综合所得应纳税所得额」（可为 0）。";
+        return;
+      }
+
+      var avg = bonus / 12;
+      var sep = taxOn(avg, MONTHLY_BRACKETS);
+      var sepTax = Math.max(0, bonus * sep.bracket.rate - sep.bracket.quick);
+
+      var taxWithout = Math.max(0, taxOn(otherTaxable, ANNUAL_BRACKETS).tax);
+      var taxWith = Math.max(0, taxOn(otherTaxable + bonus, ANNUAL_BRACKETS).tax);
+      var mergeIncremental = Math.max(0, taxWith - taxWithout);
+
+      document.getElementById("b-avg").textContent = money(avg);
+      document.getElementById("b-sep-bracket").textContent = pct(sep.bracket.rate) + " / " + money(sep.bracket.quick);
+      document.getElementById("b-sep-tax").textContent = money(sepTax);
+      document.getElementById("b-merge-base").textContent = money(otherTaxable + bonus);
+      document.getElementById("b-merge-tax").textContent = money(mergeIncremental);
+
+      var advice;
+      if (Math.abs(sepTax - mergeIncremental) < 0.01) {
+        advice = "两种方式税额接近";
+      } else if (sepTax < mergeIncremental) {
+        advice = "粗算：单独计税更低（请再用 APP 核对）";
+      } else {
+        advice = "粗算：并入综合所得更低（请再用 APP 核对）";
+      }
+      document.getElementById("b-advice").textContent = advice;
+      document.getElementById("bonus-result").classList.remove("result-hidden");
+      bump("done");
+    }
+
+    function resetForm() {
+      document.getElementById("month").value = "3";
+      document.getElementById("salary").value = "15000";
+      document.getElementById("sameSalary").checked = true;
+      document.getElementById("siBase").value = "15000";
+      document.getElementById("hfBase").value = "15000";
+      document.getElementById("pensionRate").value = "8";
+      document.getElementById("medicalRate").value = "2";
+      document.getElementById("unempRate").value = "0.5";
+      document.getElementById("hfRate").value = "12";
+      document.getElementById("siExtra").value = "0";
+      document.getElementById("specialAdd").value = "3000";
+      document.getElementById("otherDeduct").value = "0";
+      document.getElementById("taxFree").value = "0";
+      document.getElementById("bonus").value = "36000";
+      document.getElementById("annualOtherTaxable").value = "0";
+      syncSameSalaryFields();
+      estimatePriorTax();
+      setError("");
+      document.getElementById("bonus-error").textContent = "";
+      document.getElementById("result").classList.add("result-hidden");
+      document.getElementById("bonus-result").classList.add("result-hidden");
+    }
+
+    document.getElementById("sameSalary").addEventListener("change", function () {
+      if (this.checked) {
+        syncSameSalaryFields();
+        estimatePriorTax();
+      }
+    });
+    document.getElementById("month").addEventListener("input", function () {
+      if (document.getElementById("sameSalary").checked) {
+        syncSameSalaryFields();
+      }
+    });
+    document.getElementById("salary").addEventListener("input", function () {
+      if (document.getElementById("sameSalary").checked) {
+        syncSameSalaryFields();
+      }
+    });
+
+    document.getElementById("btn-calc").addEventListener("click", calcMonth);
+    document.getElementById("btn-estimate").addEventListener("click", function () {
+      document.getElementById("sameSalary").checked = true;
+      estimatePriorTax();
+    });
+    document.getElementById("btn-reset").addEventListener("click", resetForm);
+    document.getElementById("btn-bonus").addEventListener("click", calcBonus);
+
+    // 初始化示例的累计字段
+    syncSameSalaryFields();
+    estimatePriorTax();
+  })();
+  </script>
+</body>
+</html>
