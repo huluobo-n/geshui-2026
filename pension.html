@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>个人养老金税优测算 - 年底缴存能少交多少税 | 2026</title>
+  <meta name="description" content="粗算个人养老金当年税前扣除与少缴税额。年缴上限12000元；醒目提示须在12月31日前缴存。以税务局/个税APP与当地口径为准。非官方。" />
+  <meta name="keywords" content="个人养老金,税优,税前扣除,12000,个税,年底缴存,汇算清缴" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://geshui.hpn6.com/pension.html" />
+  <meta property="og:title" content="个人养老金税优测算（2026）" />
+  <meta property="og:description" content="按税率档粗算缴存后少交多少税；上限12000元/年；12-31前缴存。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://geshui.hpn6.com/pension.html" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1a2332;
+      --muted: #5a6a7a;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #0d9488;
+      --warn: #b45309;
+      --good: #047857;
+      --bad: #b91c1c;
+      --shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 220px);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+    .back { display: inline-block; margin-bottom: 10px; color: var(--primary); text-decoration: none; font-size: 0.92rem; }
+    .back:hover { text-decoration: underline; }
+    header.hero h1 {
+      font-size: clamp(1.3rem, 4vw, 1.75rem);
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    header.hero p.lead { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .deadline {
+      margin: 12px 0 0;
+      padding: 12px 14px;
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      border-radius: 12px;
+      color: #991b1b;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+    .deadline span { font-weight: 800; font-size: 1.05rem; }
+    .disclaimer {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      color: var(--warn);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .stats-bar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin: 14px 0 18px; font-size: 0.85rem; color: var(--muted);
+    }
+    .stats-bar span {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 999px; padding: 4px 12px;
+    }
+    .stats-bar strong { color: var(--text); }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 18px 18px 16px; margin-bottom: 16px;
+    }
+    .card h2 { margin: 0 0 12px; font-size: 1.05rem; }
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block; font-size: 0.86rem; color: var(--muted); margin-bottom: 4px;
+    }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 10px; font-size: 1rem; background: #fff; color: var(--text);
+      font-family: inherit;
+    }
+    .field input:focus, .field select:focus {
+      outline: 2px solid rgba(37, 99, 235, 0.25); border-color: var(--primary);
+    }
+    .field .hint { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .mode-row {
+      display: flex; flex-wrap: wrap; gap: 10px 16px;
+      margin: 0 0 12px; font-size: 0.92rem;
+    }
+    .mode-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    button {
+      appearance: none; border: none; border-radius: 10px;
+      padding: 11px 16px; font-size: 0.95rem; cursor: pointer; font-weight: 600;
+      font-family: inherit;
+    }
+    button.primary { background: var(--primary); color: #fff; }
+    button.primary:hover { background: var(--primary-hover); }
+    button.ghost { background: #f1f5f9; color: var(--text); }
+    button.ghost:hover { background: #e2e8f0; }
+    .error { color: var(--bad); font-size: 0.9rem; margin-top: 10px; min-height: 1.2em; }
+    .result-hidden { display: none; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+    .metric {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px;
+    }
+    .metric .k { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+    .metric .v { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+    .metric .v.good { color: var(--good); }
+    .highlight {
+      margin-top: 12px; padding: 14px; border-radius: 12px;
+      background: linear-gradient(135deg, #ecfdf5, #f0f9ff);
+      border: 1px solid #bbf7d0;
+    }
+    .highlight .sub { font-size: 0.85rem; color: var(--muted); }
+    .highlight .big { font-size: 1.55rem; font-weight: 800; color: var(--good); margin: 4px 0; }
+    .note { font-size: 0.88rem; color: var(--muted); margin: 12px 0 0; }
+    table.rate {
+      width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px;
+    }
+    table.rate th, table.rate td {
+      border: 1px solid var(--border); padding: 6px 8px; text-align: left;
+    }
+    table.rate th { background: #f8fafc; }
+    details.faq { border-top: 1px solid var(--border); padding: 10px 0; }
+    details.faq:first-of-type { border-top: none; }
+    details.faq summary { cursor: pointer; font-weight: 600; }
+    details.faq p { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
+    footer {
+      margin-top: 8px; text-align: center; color: var(--muted); font-size: 0.82rem; line-height: 1.7;
+    }
+    footer .site-nav { margin: 8px 0 4px; }
+    footer .site-nav a {
+      color: var(--muted); text-decoration: none; margin: 0 2px;
+    }
+    footer .site-nav a:hover { color: var(--primary); text-decoration: underline; }
+    .sources { font-size: 0.82rem; color: var(--muted); }
+    .sources a { color: var(--primary); word-break: break-all; }
+  </style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2118305643241262" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <a class="back" href="/">← 返回个税计算器</a>
+      <h1>个人养老金 · 年底缴存税优测算</h1>
+      <p class="lead">按现行综合所得税率档粗算：缴满/部分缴存后，当年大约能少交多少个税。非官方工具。</p>
+      <p class="deadline" role="status">⏰ 2026 自然年缴存硬截止：<span>12 月 31 日</span> 前完成入账，才能按当年限额税前扣除。<span id="days-left"></span></p>
+      <p class="disclaimer">以税务局、个税 APP 与当地口径为准。本页仅为公开政策转述与估算，不构成税务建议；领取环节另按 3% 单独计税（递延纳税）。</p>
+      <div class="stats-bar" aria-label="本地测算统计">
+        <span>本机测算次数：<strong id="stat-calc">0</strong></span>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">输入</h2>
+      <div class="mode-row" role="radiogroup" aria-label="税率确定方式">
+        <label><input type="radio" name="mode" value="rate" checked /> 直接选税率档</label>
+        <label><input type="radio" name="mode" value="taxable" /> 用应纳税所得额估档</label>
+      </div>
+
+      <div class="field" id="field-rate">
+        <label for="rate">适用边际税率（综合所得）</label>
+        <select id="rate">
+          <option value="0.03">3%（年应纳税所得额 ≤ 3.6 万）</option>
+          <option value="0.10" selected>10%（3.6 万–14.4 万）</option>
+          <option value="0.20">20%（14.4 万–30 万）</option>
+          <option value="0.25">25%（30 万–42 万）</option>
+          <option value="0.30">30%（42 万–66 万）</option>
+          <option value="0.35">35%（66 万–96 万）</option>
+          <option value="0.45">45%（&gt; 96 万）</option>
+          <option value="0">0%（当年应纳税所得额为 0 / 不缴综合所得个税）</option>
+        </select>
+        <div class="hint">指扣完专项、专项附加等之后的「应纳税所得额」所落档位，不是税前工资档。</div>
+      </div>
+
+      <div class="field" id="field-taxable" hidden>
+        <label for="taxable">当年应纳税所得额（元，缴存前粗估）</label>
+        <input id="taxable" type="number" min="0" step="100" value="80000" inputmode="decimal" />
+        <div class="hint">可用主站「个税计算器」先估累计应纳税所得额，再填到这里。</div>
+      </div>
+
+      <div class="field">
+        <label for="contrib">计划缴存金额（元）</label>
+        <input id="contrib" type="number" min="0" max="12000" step="100" value="12000" inputmode="decimal" />
+        <div class="hint">现行年缴上限 <strong>12000 元</strong>；超出部分不能税前扣除。可按月/分次/按年缴，额度按自然年累计。</div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" id="btn-calc">测算少缴税额</button>
+        <button type="button" class="ghost" id="btn-max">一键满额 12000</button>
+        <button type="button" class="ghost" id="btn-reset">重置</button>
+      </div>
+      <div class="error" id="error" role="alert"></div>
+    </section>
+
+    <section class="card result-hidden" id="result" aria-live="polite">
+      <h2>粗算结果</h2>
+      <div class="highlight">
+        <div class="sub">当年预计少缴个税（缴费环节税前扣除）</div>
+        <div class="big" id="r-save">¥0.00</div>
+        <div class="sub" id="r-summary"></div>
+      </div>
+      <div class="metrics" style="margin-top:12px">
+        <div class="metric">
+          <span class="k">可税前扣除额</span>
+          <span class="v" id="r-deduct">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">采用边际税率</span>
+          <span class="v" id="r-rate">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">缴存后到手税差（粗）</span>
+          <span class="v good" id="r-cash">—</span>
+        </div>
+        <div class="metric">
+          <span class="k">超限未抵扣部分</span>
+          <span class="v" id="r-over">—</span>
+        </div>
+      </div>
+      <p class="note" id="r-note"></p>
+      <p class="note">领取时：个人养老金不并入综合所得，单独按 <strong>3%</strong> 税率计税（递延纳税）。本页「少缴」只指缴费当年综合所得/经营所得税前扣除带来的当期少缴，不是终身净收益。</p>
+    </section>
+
+    <section class="card">
+      <h2>综合所得税率表（年，摘要）</h2>
+      <table class="rate">
+        <thead>
+          <tr><th>应纳税所得额</th><th>税率</th><th>速算扣除数</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>≤ 36,000</td><td>3%</td><td>0</td></tr>
+          <tr><td>36,000–144,000</td><td>10%</td><td>2,520</td></tr>
+          <tr><td>144,000–300,000</td><td>20%</td><td>16,920</td></tr>
+          <tr><td>300,000–420,000</td><td>25%</td><td>31,920</td></tr>
+          <tr><td>420,000–660,000</td><td>30%</td><td>52,920</td></tr>
+          <tr><td>660,000–960,000</td><td>35%</td><td>85,920</td></tr>
+          <tr><td>&gt; 960,000</td><td>45%</td><td>181,920</td></tr>
+        </tbody>
+      </table>
+      <p class="note">若缴存使应纳税所得额跨档，真实少缴 ≠ 缴存×原档税率；跨档时本页粗算可能略偏高/偏低，请以个税 APP 为准。</p>
+    </section>
+
+    <section class="card">
+      <h2>常见问题</h2>
+      <details class="faq">
+        <summary>上限还是 12000 吗？</summary>
+        <p>是。财政部、税务总局公告：缴费环节按 12000 元/年限额在综合所得或经营所得中据实扣除。2026 年公开口径仍为该限额（人社部/财政部可视情况调整，本页按现行执行）。</p>
+      </details>
+      <details class="faq">
+        <summary>必须 12 月 31 日前缴吗？</summary>
+        <p>要享受<strong>当年</strong>税前扣除，须在该自然年 12 月 31 日前完成缴存入账。逾期通常计入下一年度额度。</p>
+      </details>
+      <details class="faq">
+        <summary>怎么申报扣除？</summary>
+        <p>在个税 APP「办&amp;查 — 个人养老金扣除管理」确认缴费信息。工资薪金可选择当年预扣预缴或次年汇算清缴扣除；部分所得仅汇算时扣除。以个税 APP 操作为准。</p>
+      </details>
+      <details class="faq">
+        <summary>和主站个税计算器什么关系？</summary>
+        <p>主站算工资累计预扣与年终奖；本页只粗算「个人养老金缴存」这一笔税前扣除的当期税差。可互为补充，均非正式申报工具。</p>
+      </details>
+    </section>
+
+    <section class="card sources">
+      <h2>政策来源（公开）</h2>
+      <ul>
+        <li>《财政部 税务总局关于在全国范围实施个人养老金个人所得税优惠政策的公告》（2024 年第 21 号）— 12000 元/年限额、领取 3%：政府网转载 <a href="https://www.gov.cn/zhengce/zhengceku/202412/content_6992498.htm" target="_blank" rel="noopener noreferrer">gov.cn</a></li>
+        <li>上海发布等 2026 年转述：年缴上限 12000、12-31 前缴存可享受当年扣除</li>
+        <li>国家税务总局微信等汇算说明：存多少扣多少，未存满按实际，超出不扣</li>
+      </ul>
+      <p>缺口：未模拟跨档精确积分、经营所得单独路径、单位预扣时点差异、投资环节收益；以官方系统为准。</p>
+    </section>
+
+    <footer>
+      <nav class="site-nav" aria-label="站点导航">
+        <a href="/">个税计算器</a>
+        <span aria-hidden="true">·</span>
+        <a href="pension.html">个人养老金税优</a>
+        <span aria-hidden="true">·</span>
+        <a href="about.html">关于</a>
+        <span aria-hidden="true">·</span>
+        <a href="privacy.html">隐私政策</a>
+        <span aria-hidden="true">·</span>
+        <a href="contact.html">联系我们</a>
+      </nav>
+      <p>geshui.hpn6.com · 非税务机关官网<br />仅供参考，以税务局 / 个税 APP 为准。数据仅在浏览器本地计算。</p>
+    </footer>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+    var CAP = 12000;
+    var STORAGE_KEY = "geshui_pension_calc_v1";
+    var BRACKETS = [
+      { upTo: 36000, rate: 0.03 },
+      { upTo: 144000, rate: 0.10 },
+      { upTo: 300000, rate: 0.20 },
+      { upTo: 420000, rate: 0.25 },
+      { upTo: 660000, rate: 0.30 },
+      { upTo: 960000, rate: 0.35 },
+      { upTo: Infinity, rate: 0.45 }
+    ];
+
+    function money(n) {
+      if (!isFinite(n)) return "—";
+      var rounded = Math.round(n * 100) / 100;
+      return "¥" + rounded.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function pct(r) { return (r * 100).toFixed(0) + "%"; }
+
+    function rateFromTaxable(t) {
+      if (!isFinite(t) || t <= 0) return 0;
+      for (var i = 0; i < BRACKETS.length; i++) {
+        if (t <= BRACKETS[i].upTo) return BRACKETS[i].rate;
+      }
+      return 0.45;
+    }
+
+    function loadCount() {
+      try { return Number(localStorage.getItem(STORAGE_KEY)) || 0; } catch (e) { return 0; }
+    }
+    function bumpCount() {
+      var n = loadCount() + 1;
+      try { localStorage.setItem(STORAGE_KEY, String(n)); } catch (e) {}
+      document.getElementById("stat-calc").textContent = String(n);
+    }
+    document.getElementById("stat-calc").textContent = String(loadCount());
+
+    function updateDeadline() {
+      var end = new Date(2026, 11, 31, 23, 59, 59);
+      var now = new Date();
+      var el = document.getElementById("days-left");
+      if (now > end) {
+        el.textContent = "（2026 年已截止，本页仍可作口径参考。）";
+        return;
+      }
+      var days = Math.ceil((end - now) / 86400000);
+      el.textContent = "（距截止约 " + days + " 天，Asia/Shanghai。）";
+    }
+    updateDeadline();
+
+    function syncMode() {
+      var mode = document.querySelector('input[name="mode"]:checked').value;
+      document.getElementById("field-rate").hidden = mode !== "rate";
+      document.getElementById("field-taxable").hidden = mode !== "taxable";
+    }
+    var radios = document.querySelectorAll('input[name="mode"]');
+    for (var i = 0; i < radios.length; i++) {
+      radios[i].addEventListener("change", syncMode);
+    }
+    syncMode();
+
+    function setError(msg) {
+      document.getElementById("error").textContent = msg || "";
+    }
+
+    function calc() {
+      setError("");
+      var mode = document.querySelector('input[name="mode"]:checked').value;
+      var contrib = parseFloat(document.getElementById("contrib").value);
+      if (!isFinite(contrib) || contrib < 0) {
+        setError("请填写有效的计划缴存金额。");
+        document.getElementById("result").classList.add("result-hidden");
+        return;
+      }
+      var rate;
+      var taxable = NaN;
+      if (mode === "rate") {
+        rate = parseFloat(document.getElementById("rate").value);
+      } else {
+        taxable = parseFloat(document.getElementById("taxable").value);
+        if (!isFinite(taxable) || taxable < 0) {
+          setError("请填写有效的应纳税所得额。");
+          document.getElementById("result").classList.add("result-hidden");
+          return;
+        }
+        rate = rateFromTaxable(taxable);
+      }
+
+      var deduct = Math.min(contrib, CAP);
+      var over = Math.max(0, contrib - CAP);
+      var save = deduct * rate;
+
+      document.getElementById("r-save").textContent = money(save);
+      document.getElementById("r-deduct").textContent = money(deduct);
+      document.getElementById("r-rate").textContent = pct(rate);
+      document.getElementById("r-cash").textContent = money(save);
+      document.getElementById("r-over").textContent = over > 0 ? money(over) : "无";
+      document.getElementById("r-summary").textContent =
+        "可扣除 " + money(deduct) + " × 税率 " + pct(rate) + " ≈ 少缴 " + money(save);
+      var note = "粗算假设边际税率在扣减前后不变。";
+      if (mode === "taxable" && isFinite(taxable) && taxable > 0) {
+        var after = Math.max(0, taxable - deduct);
+        var rateAfter = rateFromTaxable(after);
+        if (rateAfter !== rate) {
+          note = "提示：按你填的应纳税所得额，扣减后可能跨档（扣前 " + pct(rate) + " → 扣后 " + pct(rateAfter) + "）。真实少缴请用个税 APP 精算；本页仍按扣前档粗算。";
+        } else {
+          note = "按你填的应纳税所得额 " + money(taxable) + "，扣减后约 " + money(after) + "，未跨档。";
+        }
+      }
+      if (rate === 0) {
+        note = "边际税率为 0% 时，缴费当年综合所得税前扣除带来的当期少缴约为 0；仍可能有长期储蓄/投资安排意义，请自行评估。";
+      }
+      document.getElementById("r-note").textContent = note;
+      document.getElementById("result").classList.remove("result-hidden");
+      bumpCount();
+    }
+
+    document.getElementById("btn-calc").addEventListener("click", calc);
+    document.getElementById("btn-max").addEventListener("click", function () {
+      document.getElementById("contrib").value = String(CAP);
+    });
+    document.getElementById("btn-reset").addEventListener("click", function () {
+      document.querySelector('input[name="mode"][value="rate"]').checked = true;
+      document.getElementById("rate").value = "0.10";
+      document.getElementById("taxable").value = "80000";
+      document.getElementById("contrib").value = "12000";
+      syncMode();
+      setError("");
+      document.getElementById("result").classList.add("result-hidden");
+    });
+  })();
+  </script>
+</body>
+</html>
