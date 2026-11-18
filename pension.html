@@ -151,6 +151,7 @@
     .sources a { color: var(--primary); word-break: break-all; }
   </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2118305643241262" crossorigin="anonymous"></script>
+  <script src="https://hpn6.com/t/hpn6-stats.js" data-site="pension" defer></script>
 </head>
 <body>
   <div class="wrap">
@@ -338,6 +339,7 @@
       var n = loadCount() + 1;
       try { localStorage.setItem(STORAGE_KEY, String(n)); } catch (e) {}
       document.getElementById("stat-calc").textContent = String(n);
+      if (window.hpn6track) window.hpn6track("calc");
     }
     document.getElementById("stat-calc").textContent = String(loadCount());
 
